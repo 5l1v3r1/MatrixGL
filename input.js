@@ -9,6 +9,10 @@ function inputPressed() {
     animateToMatrix(matrixValues);
 }
 
+function resetPressed() {
+    mat4.identity(currentTransformation);
+}
+
 function mouseDragged(start, startRot, e) {
     var distance = Math.sqrt(Math.pow(e.offsetX - start.offsetX, 2) +
                              Math.pow(e.offsetY - start.offsetY, 2));
@@ -20,7 +24,7 @@ function mouseDragged(start, startRot, e) {
     mat4.identity(newRotation);
     mat4.rotate(newRotation, angle, vector);
     mat4.multiply(newRotation, startRot);
-    setCurrentRotation(newRotation);
+    currentTransformation = newRotation;
 }
 
 $(function() {
@@ -30,11 +34,14 @@ $(function() {
     $('#canvas').mousedown(function(e) {
         isClicked = true;
         start = e;
-        mat4.set(currentRotation, startRot);
+        mat4.set(currentTransformation, startRot);
     }).mouseup(function(e) {
         isClicked = false;
     }).mousemove(function(e) {
         if (isClicked) mouseDragged(start, startRot, e);
+    }).on('DOMMouseScroll mousewheel', function(e) {
+        e.preventDefault();
+        currentTranslation[2] += e.originalEvent.wheelDelta / 120;
     });
     
 });

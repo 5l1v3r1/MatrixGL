@@ -1,7 +1,8 @@
 var sphere = null;
 var currentAnimation = null;
-var currentRotation = mat4.create();
-mat4.identity(currentRotation);
+var currentTransformation = mat4.create();
+mat4.identity(currentTransformation);
+var currentTranslation = [0, 0, -8];
 
 function initShapes() {
     sphere = new Sphere(1);
@@ -24,10 +25,6 @@ function animateToMatrix(matrix) {
     currentAnimation = new Animation(30, cur, matrix);
 }
 
-function setCurrentRotation(rot) {
-    currentRotation = rot;
-}
-
 function drawScene() {
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -37,8 +34,8 @@ function drawScene() {
     
     mvPushMatrix();
     
-    mat4.translate(mvMatrix, [0, 0, -8]);
-    mat4.multiply(mvMatrix, currentRotation);
+    mat4.translate(mvMatrix, currentTranslation);
+    mat4.multiply(mvMatrix, currentTransformation);
     
     if (currentAnimation) {
         var matrix = currentAnimation.next();
