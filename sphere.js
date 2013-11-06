@@ -3,8 +3,9 @@
  * for a sphere approximation.
  */
 
-function Sphere(r, _step) {
+function Sphere(_r, _step) {
     var step = _step || 10;
+    var r = _r || 1;
     Shape.call(this);
 
     this.r = r;

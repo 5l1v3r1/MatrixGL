@@ -5,7 +5,6 @@ function inputPressed() {
         var value = $(name).val();
         matrixValues[i] = parseFloat(value);
     }
-    console.log(matrixValues);
     animateToMatrix(matrixValues);
 }
 
@@ -43,5 +42,9 @@ $(function() {
         e.preventDefault();
         currentTranslation[2] += e.originalEvent.wheelDelta / 120;
     });
-    
+    $('#model').change(function() {
+        var name = $('#model').val();
+        var instance = eval('new ' + name + '()'); // hackety hack
+        loadModel(instance);
+    });
 });

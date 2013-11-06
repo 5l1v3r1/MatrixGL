@@ -7,10 +7,18 @@
         <script src="shaders.js"></script>
         <script src="shape.js"></script>
         <script src="sphere.js"></script>
+        <script src="cube.js"></script>
         <script src="draw.js"></script>
         <script src="init.js"></script>
         <script src="animation.js"></script>
         <script src="input.js"></script>
+        <style type="text/css">
+        
+        input {
+            width: 50px;
+        }
+        
+        </style>
         <title>Matrice</title>
         
         <script id="shader-fs" type="x-shader/x-fragment">
@@ -80,6 +88,10 @@
             </tr>
         </table>
         <button onclick="inputPressed()">Animate!</button>
+        <select id="model">
+            <option value="Sphere">Sphere</option>
+            <option value="Cube">Cube</option>
+        </select>
         </center>
     </body>
 </html>

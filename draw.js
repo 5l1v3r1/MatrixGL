@@ -1,14 +1,18 @@
-var sphere = null;
+var model = null;
 var currentAnimation = null;
 var currentTransformation = mat4.create();
 mat4.identity(currentTransformation);
 var currentTranslation = [0, 0, -8];
 
 function initShapes() {
-    sphere = new Sphere(1);
-    sphere.getBuffer(gl);
-    sphere.getColorBuffer(gl);
-    sphere.getNormalsBuffer(gl);
+    loadModel(new Sphere(1));
+}
+
+function loadModel(aModel) {
+    model = aModel;
+    model.getBuffer(gl);
+    model.getColorBuffer(gl);
+    model.getNormalsBuffer(gl);
 }
 
 function startAnimating() {
@@ -44,22 +48,30 @@ function drawScene() {
         mat4.set(dest, mvMatrix);
     }
     
-    
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphere.getBuffer());
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, sphere.getBuffer().itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, model.getBuffer());
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, model.getBuffer().itemSize, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphere.getColorBuffer());
-    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, sphere.getColorBuffer().itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, model.getColorBuffer());
+    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, model.getColorBuffer().itemSize, gl.FLOAT, false, 0, 0);
     
-    gl.bindBuffer(gl.ARRAY_BUFFER, sphere.getNormalsBuffer());
-    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, sphere.getNormalsBuffer().itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, model.getNormalsBuffer());
+    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, model.getNormalsBuffer().itemSize, gl.FLOAT, false, 0, 0);
+
+    var indices = model.getIndicesBuffer(gl);
+    if (indices != null) {
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indices);
+    }
 
     gl.uniform3f(shaderProgram.ambientColorUniform, 0.5, 0.5, 0.5);
     gl.uniform3fv(shaderProgram.lightingDirectionUniform, [0.5773502692, 0.5773502692, 0.5773502692]);
     gl.uniform3f(shaderProgram.directionalColorUniform, 0.8, 0.8, 0.8);
 
     setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLES, 0, sphere.getBuffer().numItems);
+    if (indices != null) {
+        gl.drawElements(model.drawingMethod(gl), indices.numItems, gl.UNSIGNED_SHORT, 0);
+    } else {
+        gl.drawArrays(model.drawingMethod(gl), 0, model.getBuffer().numItems);
+    }
 
     mvPopMatrix();
     
